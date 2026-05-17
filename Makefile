@@ -123,26 +123,26 @@ endif
 # Targets
 all: jailed
 
-jailed: SCHEME := emexDE
+jailed: SCHEME := Nyxian
 jailed: FILE := emexDE.ipa
 jailed: clean check compile package-app clean
 
-rootless: SCHEME := emexDEForJB
+rootless: SCHEME := NyxianForJB
 rootless: ARCH := iphoneos-arm64
 rootless: JB_PATH := /var/jb/
 rootless: clean check compile pseudo-sign package-deb clean
 
-roothide: SCHEME := emexDEForJB
+roothide: SCHEME := NyxianForJB
 roothide: ARCH := iphoneos-arm64e
 roothide: JB_PATH := /
 roothide: clean check compile pseudo-sign package-deb clean
 
-rootful: SCHEME := emexDEForJB
+rootful: SCHEME := NyxianForJB
 rootful: ARCH := iphoneos-arm
 rootful: JB_PATH := /
 rootful: clean check compile pseudo-sign package-deb clean
 
-trollstore: SCHEME := emexDEForJB
+trollstore: SCHEME := NyxianForJB
 trollstore: FILE := emexDE.tipa
 trollstore: clean check compile pseudo-sign package-app clean
 
@@ -183,7 +183,7 @@ compile: Nyxian/LindChain/JBSupport/tshelper CoreCompiler/CoreCompilerSupportLib
 		CODE_SIGNING_ALLOWED=NO
 
 pseudo-sign:
-	codesign --sign - --entitlements ent/nyxianforjb.xml --force --timestamp=none build/Nyxian.xcarchive/Products/Applications/NyxianForJB.app
+	codesign --sign - --entitlements ent/nyxianforjb.xml --force --timestamp=none build/Nyxian.xcarchive/Products/Applications/emexDEForJB.app
 
 package-app:
 	cp -r  build/Nyxian.xcarchive/Products/Applications Payload

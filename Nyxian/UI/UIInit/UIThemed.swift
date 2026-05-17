@@ -20,6 +20,34 @@
 */
 
 import UIKit
+import ObjectiveC.runtime
+
+final class NXSheetDismissObserver: NSObject, UIAdaptivePresentationControllerDelegate {
+    private static var key: UInt8 = 0
+    private weak var originalDelegate: UIAdaptivePresentationControllerDelegate?
+    
+    static func attach(to vc: UIViewController) {
+        guard let pc = vc.presentationController else { return }
+        let observer = NXSheetDismissObserver()
+        observer.originalDelegate = pc.delegate
+        objc_setAssociatedObject(vc, &key, observer, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        pc.delegate = observer
+    }
+    
+    override func responds(to aSelector: Selector!) -> Bool {
+        super.responds(to: aSelector) || (originalDelegate?.responds(to: aSelector) ?? false)
+    }
+    
+    override func forwardingTarget(for aSelector: Selector!) -> Any? {
+        if originalDelegate?.responds(to: aSelector) == true { return originalDelegate }
+        return super.forwardingTarget(for: aSelector)
+    }
+    
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        NXWindowServer.shared().windowsGetInMyWay()
+        originalDelegate?.presentationControllerDidDismiss?(presentationController)
+    }
+}
 
 @objc class UIThemedTableViewController: UITableViewController {
     
@@ -275,13 +303,19 @@ extension UIViewController {
     }
     
     @objc func swizzled_present(_ viewControllerToPresent: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
-        if viewControllerToPresent.modalPresentationStyle == .formSheet ||
-            viewControllerToPresent.modalPresentationStyle == .pageSheet {
+        let isSheet = viewControllerToPresent.modalPresentationStyle == .formSheet ||
+                      viewControllerToPresent.modalPresentationStyle == .pageSheet
+        
+        if isSheet {
             NXWindowServer.shared().unfocusFocusedWindow()
             NXWindowServer.shared().windowsGetOutOfMyWay()
         }
         
         swizzled_present(viewControllerToPresent, animated: animated, completion: completion)
+        
+        if isSheet {
+            NXSheetDismissObserver.attach(to: viewControllerToPresent)
+        }
     }
     
     @objc func swizzled_dismiss(animated: Bool, completion: (() -> Void)? = nil) {
