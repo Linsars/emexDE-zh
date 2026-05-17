@@ -849,6 +849,7 @@
         {
             [_fullScreenWindow.view removeFromSuperview];
             [_windowLayer addSubview:_fullScreenWindow.view];
+            [_fullScreenWindow.view layoutSubviews];
         }
         
         _fullScreenWindow = nil;
