@@ -197,7 +197,8 @@
 {
     assert([NSThread isMainThread]);
     
-    if (!_focusHitView) return;
+    if(!_focusHitView) return;
+    if(![self.delegate windowWantsToFocus:self]) return;
     self.session.isFocused = YES;
     
     [self.view.superview bringSubviewToFront:self.view];
@@ -210,7 +211,6 @@
     } completion:^(BOOL finished) {
         [self->_focusHitView removeFromSuperview];
         self->_focusHitView = nil;
-        [self.delegate windowWantsToFocus:self];
     }];
 }
 
@@ -255,6 +255,7 @@
     
     if(self.isMaximized)
     {
+        [self.delegate windowWantsToMaximize:nil];
         [_windowBar setFullscreen:NO animated:YES];
         
         self.isMaximized = NO;
@@ -281,6 +282,7 @@
     }
     else
     {
+        [self.delegate windowWantsToMaximize:self];
         [_windowBar setFullscreen:YES animated:YES];
         
         self.isMaximized = YES;

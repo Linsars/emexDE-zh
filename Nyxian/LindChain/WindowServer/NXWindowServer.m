@@ -23,12 +23,27 @@
 #import <LindChain/WindowServer/NXAppTile.h>
 #import <LindChain/ProcEnvironment/Process/PEProcessManager.h>
 
+@interface NXWindowLayerView : UIView
+@end
+
+@implementation NXWindowLayerView
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    UIView *hit = [super hitTest:point withEvent:event];
+    return (hit == self) ? nil : hit;
+}
+
+@end
+
 @implementation NXWindowServer {
     UIStackView *_stackView;
     UIStackView *_placeholderStack;
     NXWindow *_activeWindow;
     id_t _activeWindowIdentifier;
     UIScrollView *_runningAppsScrollView;
+    
+    NXWindowLayerView *_windowLayer;
 }
 
 - (instancetype)initWithWindowScene:(UIWindowScene *)windowScene
@@ -57,7 +72,16 @@
         hasInitialized = YES;
     }
     
+    _windowLayer = [[NXWindowLayerView alloc] init];
+    _windowLayer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    
     return self;
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    _windowLayer.frame = self.bounds;
 }
 
 + (instancetype)sharedWithWindowScene:(UIWindowScene*)windowScene
@@ -97,7 +121,7 @@
         _activeWindowIdentifier = identifier;
         [self moveWindowToFrontWithNumber:@(identifier)];
         [window.session activateWindow];
-        [self addSubview:window.view];
+        [_windowLayer addSubview:window.view];
         [window openWindow];
         [window focusWindow];
     }
@@ -303,6 +327,11 @@
             [self addGestureRecognizer:gestureRecognizer];
         }
     }
+    
+    // attaching the window layer
+    [self addSubview:_windowLayer];
+    [self bringSubviewToFront:_windowLayer];
+    [_windowLayer setUserInteractionEnabled:YES];
 }
 
 // TODO: FRIDA! PLS MAKE LDEWINDOWSERVERTILEVIEW!!!! IM SO LAZY ONG
@@ -778,14 +807,22 @@
     return YES;
 }
 
-- (void)windowWantsToFocus:(NXWindow *)window
+- (BOOL)windowWantsToFocus:(NXWindow *)window
 {
-    if(_activeWindow != nil &&
-       _activeWindow != window)
+    if(_presentationState == NXWindowServerPresentationStateDefault)
     {
-        [_activeWindow unfocusWindow];
+        if(_activeWindow != nil &&
+           _activeWindow != window)
+        {
+            [_activeWindow unfocusWindow];
+        }
+        _activeWindow = window;
+        return YES;
     }
-    _activeWindow = window;
+    else
+    {
+        return NO;
+    }
 }
 
 - (void)windowWantsToClose:(NXWindow *)window
@@ -802,6 +839,38 @@
 - (void)windowWantsToMinimize:(NXWindow *)window
 {
     _activeWindowIdentifier = (id_t)-1;
+}
+
+- (void)windowWantsToMaximize:(NXWindow*)window
+{
+    if(window == nil)
+    {
+        if(_fullScreenWindow != nil)
+        {
+            [_fullScreenWindow.view removeFromSuperview];
+            [_windowLayer addSubview:_fullScreenWindow.view];
+        }
+        
+        _fullScreenWindow = nil;
+        _presentationState = NXWindowServerPresentationStateDefault;
+    }
+    else
+    {
+        if(_fullScreenWindow != nil)
+        {
+            [_fullScreenWindow.view removeFromSuperview];
+            [_windowLayer addSubview:_fullScreenWindow.view];
+        }
+        
+        [window.view removeFromSuperview];
+        [self addSubview:window.view];
+        [self bringSubviewToFront:window.view];
+        [window.view layoutSubviews];
+        
+        [self windowWantsToFocus:window];
+        _fullScreenWindow = window;
+        _presentationState = NXWindowServerPresentationStateFullScreen;
+    }
 }
 
 - (CGRect)window:(NXWindow*)window wantsToChangeToRect:(CGRect)rect

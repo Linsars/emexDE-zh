@@ -26,9 +26,17 @@
 #import <UIKit/UIKit.h>
 #import <LindChain/WindowServer/Window/NXWindow.h>
 
+typedef UInt64 NXWindowServerPresentationState NS_TYPED_ENUM;
+static NXWindowServerPresentationState const NXWindowServerPresentationStateDefault = 0;
+static NXWindowServerPresentationState const NXWindowServerPresentationStateFullScreen = 1;
+static NXWindowServerPresentationState const NXWindowServerPresentationStateOutOfMyWay = 2;
+
 @interface NXWindowServer : UIWindow <UIGestureRecognizerDelegate,NXWindowDelegate>
 
-@property (nonatomic,strong,readonly) NSMutableDictionary<NSNumber*,NXWindow*> *windows;
+@property (nonatomic, readonly) NXWindowServerPresentationState presentationState;
+@property (nonatomic, weak, readonly) NXWindow *fullScreenWindow;
+
+@property (nonatomic, strong,readonly) NSMutableDictionary<NSNumber*,NXWindow*> *windows;
 @property (nonatomic, strong) NSMutableArray<NSNumber *> *windowOrder;
 
 @property (nonatomic, strong) UIView *appSwitcherView;

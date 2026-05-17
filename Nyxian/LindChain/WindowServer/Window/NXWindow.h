@@ -32,8 +32,9 @@
 @property (nonatomic) UIWindowScene *windowScene;
 
 - (void)windowWantsToClose:(NXWindow*)window;
-- (void)windowWantsToFocus:(NXWindow*)window;
+- (BOOL)windowWantsToFocus:(NXWindow*)window;
 - (void)windowWantsToMinimize:(NXWindow*)window;
+- (void)windowWantsToMaximize:(NXWindow*)window;
 
 - (CGRect)window:(NXWindow*)window wantsToChangeToRect:(CGRect)rect;
 
