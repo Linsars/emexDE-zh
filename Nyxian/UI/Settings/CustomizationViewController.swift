@@ -29,14 +29,9 @@ class CustomizationViewController: UIThemedTableViewController {
         UIApplication.shared.alternateIconName ?? "Default"
     }
     
-    var icons: [String] = [
-        "Default",
-        "Legacy",
-        "Drawn",
-        "Nyxcat",
-        "Nyxcat2",
-        "Nyxcat3"
-    ]
+    var icons: [String] = (["Default"] + Bundle.main.alternateIconNames).sorted {
+        $0.localizedStandardCompare($1) == .orderedAscending
+    }
     
     var themePreviewCell: ThemePickerPreviewCell?
     
