@@ -391,7 +391,6 @@ kern_return_t proc_state_change(ksurface_proc_t *proc,
 {
     ksurface_proc_t *parent = NULL;
     kern_return_t ksr = proc_parent_for_proc(proc, &parent);
-    
     if(ksr != KERN_SUCCESS)
     {
         return ksr;
@@ -404,11 +403,13 @@ kern_return_t proc_state_change(ksurface_proc_t *proc,
     kvo_event_trigger(parent, kvObjEventCustom0, (uintptr_t)proc);
     
     PEProcess *process = [[PEProcessManager shared] processForProcessIdentifier:proc_getpid(parent)];
-    if(process != nil)
+    kvo_release(parent);
+    if(process == nil)
     {
-        [process sendSignal:SIGCHLD];
+        return KERN_NO_ACCESS;
     }
     
-    kvo_release(parent);
+    [process sendSignal:SIGCHLD];
+    
     return KERN_SUCCESS;
 }
