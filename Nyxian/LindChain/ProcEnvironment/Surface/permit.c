@@ -26,7 +26,6 @@
 
 bool proc_snapshot_permitive_over_pid_allowed(ksurface_proc_snapshot_t *proc,
                                               pid_t targetPid,
-                                              bool allowSessionBypass,
                                               PEEntitlement entitlementsNeeded,
                                               PEEntitlement targetEntitlementsNeeded)
 {
@@ -87,8 +86,7 @@ bool proc_snapshot_permitive_over_pid_allowed(ksurface_proc_snapshot_t *proc,
         goto out_no;
     }
     
-    if(allowSessionBypass &&
-       proc_getsid(proc) == proc_getsid(targetProc))
+    if(proc_getsid(proc) == proc_getsid(targetProc))
     {
         goto out_euid_check;
     }
