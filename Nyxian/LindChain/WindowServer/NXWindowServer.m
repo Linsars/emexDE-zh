@@ -304,6 +304,11 @@
 - (void)makeKeyAndVisible
 {
     [super makeKeyAndVisible];
+    
+    /* attaching the window layer */
+    [self addSubview:_windowLayer];
+    [self bringSubviewToFront:_windowLayer];
+    [_windowLayer setUserInteractionEnabled:YES];
 
     if(UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone)
     {
@@ -321,11 +326,6 @@
             [self addGestureRecognizer:gestureRecognizer];
         }
     }
-    
-    // attaching the window layer
-    [self addSubview:_windowLayer];
-    [self bringSubviewToFront:_windowLayer];
-    [_windowLayer setUserInteractionEnabled:YES];
 }
 
 // TODO: FRIDA! PLS MAKE LDEWINDOWSERVERTILEVIEW!!!! IM SO LAZY ONG
