@@ -574,7 +574,7 @@ struct ProjectTemplateOptionsView: View {
                 generatedIdentifierRow
             }
             .background(groupBackground)
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             
             VStack(spacing: 8) {
                 if model.showsAppOptions {
