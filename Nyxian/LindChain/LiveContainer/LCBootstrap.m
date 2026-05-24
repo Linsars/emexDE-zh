@@ -52,22 +52,29 @@ int hook__NSGetExecutablePath_overwriteExecPath(char*** dyldApiInstancePtr, char
     
     char** mainExecutablePathPtr = 0;
     // mainExecutablePath is at 0x10 for iOS 15~18.3.2, 0x20 for iOS 18.4+
-    if(dyldConfig[2] != 0 && dyldConfig[2][0] == '/') {
+    if(dyldConfig[2] != 0 && dyldConfig[2][0] == '/')
+    {
         mainExecutablePathPtr = dyldConfig + 2;
-    } else if (dyldConfig[4] != 0 && dyldConfig[4][0] == '/') {
+    }
+    else if(dyldConfig[4] != 0 && dyldConfig[4][0] == '/')
+    {
         mainExecutablePathPtr = dyldConfig + 4;
-    } else {
+    }
+    else
+    {
         assert(mainExecutablePathPtr != 0);
     }
 
     kern_return_t ret = builtin_vm_protect(mach_task_self(), (mach_vm_address_t)mainExecutablePathPtr, sizeof(mainExecutablePathPtr), false, PROT_READ | PROT_WRITE);
-    if(ret != KERN_SUCCESS) {
+    if(ret != KERN_SUCCESS)
+    {
         assert(os_tpro_is_supported());
         os_thread_self_restrict_tpro_to_rw();
     }
     /* MARK: setting a copy of the path as the new pointer (required cuz objc NSString UTF8String pointers are not safe and can become stale) */
     *mainExecutablePathPtr = strdup(newPath);
-    if(ret != KERN_SUCCESS) {
+    if(ret != KERN_SUCCESS)
+    {
         os_thread_self_restrict_tpro_to_ro();
     }
 
@@ -118,7 +125,7 @@ void LCOverwriteExecutablePath(NSString *executablePath)
     }
 }
 
-static void *getAppEntryPoint(void *handle)
+static void *LCGetAppEntryPoint(void *handle)
 {
     const struct mach_header_64 *header = (const struct mach_header_64 *)getGuestAppHeader();
     const struct load_command *cmd = (const struct load_command *) ((uintptr_t)header + sizeof(struct mach_header_64));
@@ -137,7 +144,7 @@ static void *getAppEntryPoint(void *handle)
     __builtin_unreachable();
 }
 
-void InsertLibrariesIfNeeded(void)
+void LCInsertLibrariesIfNeeded(void)
 {
     const char *librariesToInsert = getenv("DYLD_INSERT_LIBRARIES");
     if(librariesToInsert == NULL)
@@ -151,7 +158,6 @@ void InsertLibrariesIfNeeded(void)
     for(NSString *library in librariesToInsertArray)
     {
         void *handle = dlopen([library UTF8String], RTLD_GLOBAL | RTLD_NOW);
-        
         if(handle == NULL)
         {
             const char *error = dlerror();
@@ -181,7 +187,7 @@ int LCBootstrapMain(NSString *executablePath,
      *        which is hard or we find another way.
      */
     appMainImageIndex = _dyld_image_count();
-    void *appHandle = dlopenBypassingLock(executablePath.fileSystemRepresentation, RTLD_LAZY|RTLD_GLOBAL|RTLD_FIRST|RTLD_NODELETE);
+    void *appHandle = dlopenBypassingLock(executablePath.fileSystemRepresentation, RTLD_LAZY | RTLD_GLOBAL | RTLD_FIRST | RTLD_NODELETE);
     appExecutableHandle = appHandle;
     const char *dlerr = dlerror();
     
@@ -191,7 +197,7 @@ int LCBootstrapMain(NSString *executablePath,
     }
     
     /* find main */
-    int (*appMain)(int, char**) = getAppEntryPoint(appHandle);
+    int (*appMain)(int, char**) = LCGetAppEntryPoint(appHandle);
     if(!appMain)
     {
         return 1;
@@ -204,7 +210,7 @@ int LCBootstrapMain(NSString *executablePath,
     UIKitGuestHooksInit();
     initDead10ccFix();
     DyldHooksInit();
-    InsertLibrariesIfNeeded();
+    LCInsertLibrariesIfNeeded();
     
     return appMain(argc, argv);
 }

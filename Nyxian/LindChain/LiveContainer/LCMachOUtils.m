@@ -290,11 +290,13 @@ NSString *LCPatchMachOFixupARM64eSlice(const char *path)
     }
 
     uint32_t magic = *(uint32_t *)machO->map;
-    if(magic == FAT_CIGAM) {
+    if(magic == FAT_CIGAM)
+    {
         // Find arm64e slice without CPU_SUBTYPE_LIB64
         struct fat_header *header = (struct fat_header *)machO->map;
         struct fat_arch *arch = (struct fat_arch *)(machO->map + sizeof(struct fat_header));
-        for(int i = 0; i < OSSwapInt32(header->nfat_arch); i++) {
+        for(int i = 0; i < OSSwapInt32(header->nfat_arch); i++)
+        {
             if(OSSwapInt32(arch->cputype) == CPU_TYPE_ARM64 && OSSwapInt32(arch->cpusubtype) == CPU_SUBTYPE_ARM64E)
             {
                 struct mach_header_64 *header = (struct mach_header_64 *)(machO->map + OSSwapInt32(arch->offset));

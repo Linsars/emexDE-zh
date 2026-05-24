@@ -46,6 +46,31 @@
     return YES;
 }
 
+- (CGRect)hook_statusBarFrame
+{
+    UIStatusBarManager* manager = [(UIWindowScene*)(UIApplication.sharedApplication.connectedScenes.anyObject) statusBarManager];
+    if(manager)
+    {
+        return manager.statusBarFrame;
+    }
+    else
+    {
+        return [self hook_statusBarFrame];
+    }
+}
+
+- (void)hook_setDelegate:(id<UIApplicationDelegate>)delegate
+{
+    if(![delegate respondsToSelector:@selector(application:configurationForConnectingSceneSession:options:)])
+    {
+        // Fix old apps black screen when UIApplicationSupportsMultipleScenes is YES
+        swizzle_objc_method(@selector(makeKeyAndVisible), [UIApplication class], @selector(hook_makeKeyAndVisible), nil);
+        swizzle_objc_method(@selector(makeKeyWindow), [UIApplication class], @selector(hook_makeKeyWindow), nil);
+        swizzle_objc_method(@selector(setHidden:), [UIApplication class], @selector(hook_setHidden:), nil);
+    }
+    [self hook_setDelegate:delegate];
+}
+
 @end
 
 @interface UIViewController ()
@@ -75,6 +100,42 @@
     [self hook_setAutorotates:YES forceUpdateInterfaceOrientation:YES];
 }
 
+- (void)hook_makeKeyAndVisible
+{
+    [self updateWindowScene];
+    [self hook_makeKeyAndVisible];
+}
+
+- (void)hook_makeKeyWindow
+{
+    [self updateWindowScene];
+    [self hook_makeKeyWindow];
+}
+
+- (void)hook_resignKeyWindow
+{
+    [self updateWindowScene];
+    [self hook_resignKeyWindow];
+}
+
+- (void)hook_setHidden:(BOOL)hidden
+{
+    [self updateWindowScene];
+    [self hook_setHidden:hidden];
+}
+
+- (void)updateWindowScene
+{
+    for(UIWindowScene *windowScene in [PrivClass(UIApplication) sharedApplication].connectedScenes)
+    {
+        if(!self.windowScene && self.screen == windowScene.screen)
+        {
+            self.windowScene = windowScene;
+            break;
+        }
+    }
+}
+
 @end
 
 void UIKitGuestHooksInit(void)
@@ -88,5 +149,6 @@ void UIKitGuestHooksInit(void)
         swizzle_objc_method(@selector(__supportedInterfaceOrientations), [UIViewController class], @selector(hook___supportedInterfaceOrientations), nil);
         swizzle_objc_method(@selector(shouldAutorotateToInterfaceOrientation:), [UIViewController class], @selector(hook_shouldAutorotateToInterfaceOrientation:), nil);
         swizzle_objc_method(@selector(setAutorotates:forceUpdateInterfaceOrientation:), [UIWindow class], @selector(hook_setAutorotates:forceUpdateInterfaceOrientation:), nil);
+        swizzle_objc_method(@selector(setDelegate:), [UIApplication class], @selector(hook_setDelegate:), nil);
     });
 }
