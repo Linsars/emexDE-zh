@@ -72,6 +72,26 @@
 
 #pragma mark Code signing
 
++ (NSError *)patchExecutable:(NSString*)path
+{
+    NSError *error = nil;
+    LCMachO *machO = LCMapMachO(path.UTF8String, false);
+    if(machO != nil)
+    {
+        if(machO->header->cputype != CPU_TYPE_ARM64 ||
+           LCPatchExecSlice(machO) != 0)
+        {
+            error = [NSError errorWithDomain:@"com.nyxian.lcutils" code:0 userInfo:@{ NSLocalizedDescriptionKey: @"unsupported executable format" } ];
+        }
+        LCUnmapMachO(machO);
+    }
+    else
+    {
+        error = [NSError errorWithDomain:@"com.nyxian.lcutils" code:0 userInfo:@{ NSLocalizedDescriptionKey: @"couldn't map MachO file" } ];
+    }
+    return error;
+}
+
 + (NSProgress *)signAppBundleWithZSign:(NSURL *)path
                      completionHandler:(void (^)(BOOL success, NSError *error))completionHandler
 {
@@ -79,7 +99,6 @@
     
     /* trying to make a new NSBundle for the bundle at path */
     NSBundle *bundle = [NSBundle bundleWithURL:path];
-    
     if(bundle == nil)
     {
         /* TODO: craft a error */
@@ -87,19 +106,7 @@
     }
     
     /* patching executable slice if necessary */
-    NSString *errorStr = LCParseMachO(bundle.executablePath.UTF8String, false, ^(const char *path, struct mach_header_64 *header, int fd, void* filePtr){
-        if(header->cputype != CPU_TYPE_ARM64 ||
-           LCPatchExecSlice(path, header, YES) != 0)
-        {
-            error = [NSError errorWithDomain:@"com.nyxian.lcutils" code:0 userInfo:@{ NSLocalizedDescriptionKey: @"unsupported executable format" } ];
-        }
-    });
-    
-    if(errorStr)
-    {
-        error = [NSError errorWithDomain:@"com.nyxian.lcutils" code:0 userInfo:@{ NSLocalizedDescriptionKey: @"unsupported executable format" } ];
-    }
-    
+    error = [LCUtils patchExecutable:bundle.executablePath];
     if(error)
     {
         completionHandler(NO, error);
@@ -114,22 +121,8 @@
 
 + (BOOL)signMachOAtURL:(NSURL *)url
 {
-    __block NSError *error = nil;
-    
     /* patching executable slice if necessary */
-    NSString *errorStr = LCParseMachO(url.path.UTF8String, false, ^(const char *path, struct mach_header_64 *header, int fd, void* filePtr){
-        if(header->cputype != CPU_TYPE_ARM64 ||
-           LCPatchExecSlice(path, header, YES) != 0)
-        {
-            error = [NSError errorWithDomain:@"com.nyxian.lcutils" code:0 userInfo:@{ NSLocalizedDescriptionKey: @"unsupported executable format" } ];
-        }
-    });
-    
-    if(errorStr)
-    {
-        error = [NSError errorWithDomain:@"com.nyxian.lcutils" code:0 userInfo:@{ NSLocalizedDescriptionKey: @"unsupported executable format" } ];
-    }
-    
+    NSError *error = error = [LCUtils patchExecutable:url.path];;
     if(error)
     {
         return NO;
