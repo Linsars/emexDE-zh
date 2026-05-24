@@ -112,7 +112,10 @@ DEFINE_HOOK(dlopen, void *, (const char * __path,
                              int __mode))
 {
     /* check CS */
-    if(!checkCodeSignature(__path))
+    LCMachO *machO = LCMapMachO(__path, true);
+    bool cs_valid = LCCheckCodeSignature(machO);
+    LCUnmapMachO(machO);
+    if(!cs_valid)
     {
         /* sign if invalid */
         if((int)environment_syscall(SYS_pectl, PECTL_CS_SIGN_PATH, __path, MACH_PORT_NULL) == 0)

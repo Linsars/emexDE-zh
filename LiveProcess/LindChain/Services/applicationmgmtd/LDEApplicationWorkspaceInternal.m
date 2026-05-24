@@ -26,8 +26,7 @@
 #import <Security/Security.h>
 #import <LindChain/ProcEnvironment/Object/FDMapObject.h>
 #import <LindChain/Services/applicationmgmtd/LDEApplicationWorkspaceProtocol.h>
-
-bool checkCodeSignature(const char* path);
+#import <LindChain/LiveContainer/LCMachOUtils.h>
 
 @interface LDEApplicationWorkspaceInternal ()
 
@@ -161,7 +160,10 @@ bool checkCodeSignature(const char* path);
     }
     
     /* code signature check */
-    if(!checkCodeSignature([bundle.executablePath UTF8String]))
+    LCMachO *machO = LCMapMachO([bundle.executablePath UTF8String], true);
+    bool cs_valid = LCCheckCodeSignature(machO);
+    LCUnmapMachO(machO);
+    if(!cs_valid)
     {
         return NO;
     }
@@ -535,12 +537,14 @@ create_home:
     [object writeOut:[[[[LDEApplicationWorkspaceInternal shared] binaryURL] path] stringByAppendingPathComponent:name]];
     void refreshFile(const char* path);
     refreshFile(fastPath.fileSystemRepresentation);
-    bool isSigned = checkCodeSignature(fastPath.fileSystemRepresentation);
-    if(!isSigned)
+    LCMachO *machO = LCMapMachO(fastPath.fileSystemRepresentation, true);
+    bool cs_valid = LCCheckCodeSignature(machO);
+    LCUnmapMachO(machO);
+    if(!cs_valid)
     {
         [[NSFileManager defaultManager] removeItemAtPath:fastPath error:nil];
     }
-    reply(fastPath, isSigned);
+    reply(fastPath, cs_valid);
 }
 
 - (void)applicationObjectForExecutablePath:(NSString*)executablePath

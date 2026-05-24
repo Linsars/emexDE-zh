@@ -78,8 +78,7 @@
     LCMachO *machO = LCMapMachO(path.UTF8String, false);
     if(machO != nil)
     {
-        if(machO->header->cputype != CPU_TYPE_ARM64 ||
-           LCPatchExecSlice(machO) != 0)
+        if(machO->header->cputype != CPU_TYPE_ARM64 || !LCPatchExecSlice(machO))
         {
             error = [NSError errorWithDomain:@"com.nyxian.lcutils" code:0 userInfo:@{ NSLocalizedDescriptionKey: @"unsupported executable format" } ];
         }
@@ -114,7 +113,7 @@
     }
     
     /* patching arm64e things */
-    LCPatchAppBundleFixupARM64eSlice(path);
+    LCPatchAppBundleFixupARM64eSlice(bundle);
     
     return [ZSigner signWithAppPath:[path path] prov:self.profileData key: self.certificateData pass:self.certificatePassword completionHandler:completionHandler];
 }

@@ -39,16 +39,14 @@ typedef struct {
     struct mach_header_64 *header;
 } LCMachO;
 
-#define PATCH_EXEC_RESULT_NO_SPACE_FOR_TWEAKLOADER 1
-
 LCMachO *LCMapMachO(const char *path, bool readOnly);
 void LCUnmapMachO(LCMachO *machO);
 
-void LCPatchAppBundleFixupARM64eSlice(NSURL *bundleURL);
-int LCPatchExecSlice(LCMachO *machO);
+void LCPatchAppBundleFixupARM64eSlice(NSBundle *bundle);
+bool LCPatchExecSlice(LCMachO *machO);
 uint64_t LCFindSymbolOffset(const char *basePath, const char *symbol);
 struct mach_header_64 *LCGetLoadedImageHeader(int i0, const char* name);
-bool checkCodeSignature(const char* path);
+bool LCCheckCodeSignature(LCMachO *machO);
 void *getDyldBase(void);
 
 #endif /* LIVECONTAINER_LCMACHOUTILS_H */

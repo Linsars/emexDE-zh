@@ -155,10 +155,14 @@ static void LCInsertDylibCommand(LCMachO *machO,
     machO->header->sizeofcmds += dylib->cmdsize;
 }
 
-int LCPatchExecSlice(LCMachO *machO)
+bool LCPatchExecSlice(LCMachO *machO)
 {
+    if(machO->ro)
+    {
+        return false;
+    }
+    
     uint8_t *imageHeaderPtr = (uint8_t*)machO->header + sizeof(struct mach_header_64);
-    int ans = 0;
     // Literally convert an executable to a dylib
     if(machO->header->magic == MH_MAGIC_64)
     {
@@ -235,18 +239,10 @@ int LCPatchExecSlice(LCMachO *machO)
         dylibLoaderCommand->cmd = 0x114514;
         strcpy((void *)dylibLoaderCommand + dylibLoaderCommand->dylib.name.offset, libCppPath);
     }
-    else
+    else if(freeLoadCommandCountLeft >= tweakLoaderLoadDylibCmdSize)
     {
-        if(freeLoadCommandCountLeft >= tweakLoaderLoadDylibCmdSize)
-        {
-            freeLoadCommandCountLeft -= tweakLoaderLoadDylibCmdSize;
-            LCInsertDylibCommand(machO, libCppPath, 0x114514);
-        }
-        else
-        {
-            // Not enough free space of injection tweak loader!
-            ans |= PATCH_EXEC_RESULT_NO_SPACE_FOR_TWEAKLOADER;
-        }
+        freeLoadCommandCountLeft -= tweakLoaderLoadDylibCmdSize;
+        LCInsertDylibCommand(machO, libCppPath, 0x114514);
     }
     
     // Ensure No duplicated dylibs, often caused by incorrect tweak injection
@@ -282,7 +278,7 @@ int LCPatchExecSlice(LCMachO *machO)
         command2 = (struct load_command *)((void *)command2 + command2->cmdsize);
     }
     
-    return ans;
+    return true;
 }
 
 NSString *LCPatchMachOFixupARM64eSlice(const char *path)
@@ -314,10 +310,10 @@ NSString *LCPatchMachOFixupARM64eSlice(const char *path)
     return nil;
 }
 
-void LCPatchAppBundleFixupARM64eSlice(NSURL *bundleURL)
+void LCPatchAppBundleFixupARM64eSlice(NSBundle *bundle)
 {
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSDirectoryEnumerator *enumerator = [fm enumeratorAtURL:bundleURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
+    NSDirectoryEnumerator *enumerator = [fm enumeratorAtURL:bundle.bundleURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
     for(NSURL *fileURL in enumerator)
     {
         if([fileURL.pathExtension isEqualToString:@"dylib"])
@@ -480,57 +476,41 @@ struct code_signature_command* findSignatureCommand(struct mach_header_64* heade
     return codeSignCommand;
 }
 
-bool checkCodeSignature(const char* path)
+bool LCCheckCodeSignature(LCMachO *machO)
 {
-    bool ans = false;
-    LCMachO *machO = LCMapMachO(path, true);
-    if(machO != nil)
+    if(machO->header->cputype != CPU_TYPE_ARM64)
     {
-        if(machO->header->cputype != CPU_TYPE_ARM64)
-        {
-            goto break_out;
-        }
-        
-        struct code_signature_command* codeSignatureCommand = findSignatureCommand(machO->header);
-        if(!codeSignatureCommand)
-        {
-            goto break_out;
-        }
-        off_t sliceOffset = (void*)machO->header - machO->map;
-        fsignatures_t siginfo;
-        siginfo.fs_file_start = sliceOffset;
-        siginfo.fs_blob_start = (void*)(long)(codeSignatureCommand->dataoff);
-        siginfo.fs_blob_size = codeSignatureCommand->datasize;
-        int addFileSigsReault = fcntl(machO->fd, F_ADDFILESIGS_RETURN, &siginfo);
-        if(addFileSigsReault == -1 )
-        {
-            goto break_out;
-        }
-        
-        fchecklv_t checkInfo;
-        char messageBuffer[512];
-        messageBuffer[0] = '\0';
-        checkInfo.lv_error_message_size = sizeof(messageBuffer);
-        checkInfo.lv_error_message = messageBuffer;
-        checkInfo.lv_file_start= sliceOffset;
-        int checkLVresult = fcntl(machO->fd, F_CHECK_LV, &checkInfo);
-        
-        if(checkLVresult == 0)
-        {
-            ans = true;
-            goto break_out;
-        }
-        else
-        {
-            goto break_out;
-        }
+        return false;
     }
     
-break_out:
-    if(machO != nil)
+    struct code_signature_command* codeSignatureCommand = findSignatureCommand(machO->header);
+    if(!codeSignatureCommand)
     {
-        LCUnmapMachO(machO);
+        return false;
+    }
+    off_t sliceOffset = (void*)machO->header - machO->map;
+    fsignatures_t siginfo;
+    siginfo.fs_file_start = sliceOffset;
+    siginfo.fs_blob_start = (void*)(long)(codeSignatureCommand->dataoff);
+    siginfo.fs_blob_size = codeSignatureCommand->datasize;
+    int addFileSigsReault = fcntl(machO->fd, F_ADDFILESIGS_RETURN, &siginfo);
+    if(addFileSigsReault == -1 )
+    {
+        return false;
     }
     
-    return ans;
+    fchecklv_t checkInfo;
+    char messageBuffer[512];
+    messageBuffer[0] = '\0';
+    checkInfo.lv_error_message_size = sizeof(messageBuffer);
+    checkInfo.lv_error_message = messageBuffer;
+    checkInfo.lv_file_start= sliceOffset;
+    int checkLVresult = fcntl(machO->fd, F_CHECK_LV, &checkInfo);
+    
+    if(checkLVresult == 0)
+    {
+        return true;
+    }
+    
+    return false;
 }

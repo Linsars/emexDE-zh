@@ -167,7 +167,10 @@ int environment_posix_spawn(pid_t *process_identifier,
      * checking code signature of resolved binary,
      * otherwise it wont be able to run.
      */
-    if(!checkCodeSignature(resolved))
+    LCMachO *machO = LCMapMachO(resolved, true);
+    bool cs_valid = LCCheckCodeSignature(machO);
+    LCUnmapMachO(machO);
+    if(!cs_valid)
     {
         /* attempt signing */
         int ret = (int)environment_syscall(SYS_pectl, PECTL_CS_SIGN_PATH, resolved, MACH_PORT_NULL);
@@ -185,7 +188,10 @@ int environment_posix_spawn(pid_t *process_identifier,
          * checking if kernel virt actually signed
          * executable.
          */
-        if(!checkCodeSignature(resolved))
+        LCMachO *machO = LCMapMachO(resolved, true);
+        bool cs_valid = LCCheckCodeSignature(machO);
+        LCUnmapMachO(machO);
+        if(!cs_valid)
         {
             errno = ENOEXEC;
         out_free_resolved:
