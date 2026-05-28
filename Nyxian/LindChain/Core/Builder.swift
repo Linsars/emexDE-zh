@@ -92,6 +92,8 @@ class Builder: NSObject, MDKDriverDelegate, MDKPhaseRunnerDelegate {
     
     private let argsString: String
     
+    static var builds: Bool = false
+    
     init?(project: NXProject) {
         self.project = project
         self.project.reload()
@@ -528,6 +530,7 @@ func buildProjectWithArgumentUI(targetViewController: UIViewController,
         
         let barButton: UIBarButtonItem = UIBarButtonItem(customView: XCButton.shared())
         
+        Builder.builds = true
         targetViewController.navigationItem.setRightBarButtonItems([barButton], animated: true)
         targetViewController.navigationItem.setHidesBackButton(true, animated: true)
         
@@ -540,6 +543,8 @@ func buildProjectWithArgumentUI(targetViewController: UIViewController,
                     targetViewController.navigationItem.setHidesBackButton(false, animated: true)
                     targetViewController.navigationController?.navigationBar.isUserInteractionEnabled = true
                     targetViewController.navigationItem.titleView?.isUserInteractionEnabled = true
+                    
+                    Builder.builds = false
                     
                     if !result {
                         let loggerView = UINavigationController(rootViewController: UIDebugViewController(project: project))
