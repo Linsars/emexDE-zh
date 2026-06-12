@@ -87,7 +87,7 @@ class FlagsEditViewController: UIThemedTableViewController {
                 return cell
             case .add:
                 let cell = tableView.dequeueReusableCell(withIdentifier: addFlagCell, for: indexPath)
-                cell.textLabel?.text = "Add Flag…"
+                cell.textLabel?.text = NSLocalizedString("Add Flag…", comment: "")
                 cell.textLabel?.textColor = view.tintColor
                 return cell
         }
@@ -157,7 +157,7 @@ class FlagsEditViewController: UIThemedTableViewController {
     }
 
     private func presentAddAlert() {
-        presentFlagAlert(title: "Add Flag", existingValue: nil) { [weak self] value in
+        presentFlagAlert(title: NSLocalizedString("Add Flag", comment: ""), existingValue: nil) { [weak self] value in
             guard let self else { return }
             self.flags.append(value)
             let ip = IndexPath(row: self.flags.count - 1, section: Section.flags.rawValue)
@@ -167,7 +167,7 @@ class FlagsEditViewController: UIThemedTableViewController {
     }
 
     private func presentEditAlert(editing row: Int) {
-        presentFlagAlert(title: "Edit Flag", existingValue: flags[row]) { [weak self] value in
+        presentFlagAlert(title: NSLocalizedString("Edit Flag", comment: ""), existingValue: flags[row]) { [weak self] value in
             guard let self else { return }
             self.flags[row] = value
             let ip = IndexPath(row: row, section: Section.flags.rawValue)
@@ -195,7 +195,7 @@ class FlagsEditViewController: UIThemedTableViewController {
         }
 
         alert.addAction(confirm)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel))
         alert.preferredAction = confirm
 
         present(alert, animated: true)
@@ -263,7 +263,7 @@ class ProjectConfigViewController: UIThemedTableViewController {
         title = "Project Configuration"
         
         let saveButton: UIBarButtonItem = UIBarButtonItem()
-        saveButton.title = "Save"
+        saveButton.title = NSLocalizedString("Save", comment: "")
         saveButton.target = self
         saveButton.action = #selector(saveTapped)
         saveButton.isEnabled = false
@@ -396,34 +396,34 @@ class ProjectConfigViewController: UIThemedTableViewController {
             case .general:
                 switch GeneralRow(rawValue: indexPath.row)! {
                     case .displayName:
-                        presentTextAlert(title: "Display Name", current: pendingDisplayName, placeholder: "Hello") {
+                        presentTextAlert(title: NSLocalizedString("Display Name", comment: ""), current: pendingDisplayName, placeholder: "Hello") {
                             self.pendingDisplayName = $0
                             self.markDirty()
                         }
                     case .executable:
-                        presentTextAlert(title: "Executable", current: pendingExecutable, placeholder: "hello") {
+                        presentTextAlert(title: NSLocalizedString("Executable", comment: ""), current: pendingExecutable, placeholder: "hello") {
                             self.pendingExecutable = $0;
                             self.markDirty()
                         }
                     case .bundleIdentifier:
-                        presentTextAlert(title: "Bundle Identifier", current: pendingBundleIdentifier, placeholder: "com.nyxian.example") {
+                        presentTextAlert(title: NSLocalizedString("Bundle Identifier", comment: ""), current: pendingBundleIdentifier, placeholder: "com.nyxian.example") {
                             self.pendingBundleIdentifier = $0;
                             self.markDirty()
                         }
                     case .bundleVersion:
-                        presentTextAlert(title: "Bundle Version", current: pendingBundleVersion, placeholder: "1.0") {
+                        presentTextAlert(title: NSLocalizedString("Bundle Version", comment: ""), current: pendingBundleVersion, placeholder: "1.0") {
                             self.pendingBundleVersion = $0;
                             self.markDirty()
                         }
                     case .bundleShortVersion:
-                        presentTextAlert(title: "Bundle Short Version", current: pendingBundleShortVersion, placeholder: "1.0") {
+                        presentTextAlert(title: NSLocalizedString("Bundle Short Version", comment: ""), current: pendingBundleShortVersion, placeholder: "1.0") {
                             self.pendingBundleShortVersion = $0;
                             self.markDirty()
                         }
                 }
             case .deplyment:
                 switch DeploymentRow(rawValue: indexPath.row)! {
-                    case .deployVersion: pushVersionPicker(title: "Deployment Target",  current: pendingDeployVersion) { self.pendingDeployVersion = $0; self.markDirty() }
+                    case .deployVersion: pushVersionPicker(title: NSLocalizedString("Deployment Target", comment: ""),  current: pendingDeployVersion) { self.pendingDeployVersion = $0; self.markDirty() }
                 }
             case .buildFlags:
                 switch BuildFlagRow(rawValue: indexPath.row)! {
@@ -477,14 +477,14 @@ class ProjectConfigViewController: UIThemedTableViewController {
             field.autocapitalizationType = .none
             field.clearButtonMode = .whileEditing
         }
-        let save = UIAlertAction(title: "Save", style: .default) { _ in
+        let save = UIAlertAction(title: NSLocalizedString("Save", comment: ""), style: .default) { _ in
             let value = alert.textFields?.first?.text?.trimmingCharacters(in: .whitespaces) ?? ""
             guard !value.isEmpty else { return }
             completion(value)
             self.tableView.reloadData()
         }
         alert.addAction(save)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel))
         alert.preferredAction = save
         present(alert, animated: true)
     }

@@ -38,33 +38,33 @@ class MachOPatcherViewController: UIThemedTableViewController {
     }
 
     private let sections: [EntitlementSection] = [
-        EntitlementSection(title: "Task & Process Access", rows: [
-            EntitlementRow(title: "Get Task Allowed", detail: "Allows other entitled processes to obtain the process's task port.", flag: .getTaskAllowed),
-            EntitlementRow(title: "Task for Pid", detail: "Allows obtaining the task port of other processes by pid.", flag: .taskForPid),
-            EntitlementRow(title: "Process Enumeration", detail: "Allows listing all running processes in nyxian.", flag: .processEnumeration),
+        EntitlementSection(title: NSLocalizedString("Task & Process Access", comment: ""), rows: [
+            EntitlementRow(title: NSLocalizedString("Get Task Allowed", comment: ""), detail: "Allows other entitled processes to obtain the process's task port.", flag: .getTaskAllowed),
+            EntitlementRow(title: NSLocalizedString("Task for Pid", comment: ""), detail: "Allows obtaining the task port of other processes by pid.", flag: .taskForPid),
+            EntitlementRow(title: NSLocalizedString("Process Enumeration", comment: ""), detail: "Allows listing all running processes in nyxian.", flag: .processEnumeration),
         ]),
-        EntitlementSection(title: "Process Control", rows: [
-            EntitlementRow(title: "Process Kill", detail: "Allows sending signals to other processes.", flag: .processKill),
-            EntitlementRow(title: "Process Spawn", detail: "Allows spawning arbitrary processes.", flag: .processSpawn),
-            EntitlementRow(title: "Process Spawn (Signed Only)", detail: "Spawn is restricted to signed binaries only.", flag: .processSpawnSignedOnly),
-            EntitlementRow(title: "Process Elevate", detail: "Allows elevating ucred privileges.", flag: .processElevate),
-            EntitlementRow(title: "Inherit Entitlements on Spawn", detail: "Child processes inherites the parent processes entitlements.", flag: .processSpawnInheriteEntitlements),
+        EntitlementSection(title: NSLocalizedString("Process Control", comment: ""), rows: [
+            EntitlementRow(title: NSLocalizedString("Process Kill", comment: ""), detail: "Allows sending signals to other processes.", flag: .processKill),
+            EntitlementRow(title: NSLocalizedString("Process Spawn", comment: ""), detail: "Allows spawning arbitrary processes.", flag: .processSpawn),
+            EntitlementRow(title: NSLocalizedString("Process Spawn (Signed Only)", comment: ""), detail: "Spawn is restricted to signed binaries only.", flag: .processSpawnSignedOnly),
+            EntitlementRow(title: NSLocalizedString("Process Elevate", comment: ""), detail: "Allows elevating ucred privileges.", flag: .processElevate),
+            EntitlementRow(title: NSLocalizedString("Inherit Entitlements on Spawn", comment: ""), detail: "Child processes inherites the parent processes entitlements.", flag: .processSpawnInheriteEntitlements),
         ]),
-        EntitlementSection(title: "Launch Services", rows: [
-            EntitlementRow(title: "Start Service", detail: "Allows starting launch services. (unimplemented)", flag: .launchServicesStart),
-            EntitlementRow(title: "Stop Service", detail: "Allows stopping launch services. (unimplemented)", flag: .launchServicesStop),
-            EntitlementRow(title: "Toggle Service", detail: "Allows toggling launch services on or off. (unimplemented)", flag: .launchServicesToggle),
-            EntitlementRow(title: "Get Service Endpoint", detail: "Allows reading the endpoint of a launch service.", flag: .launchServicesGetEndpoint),
-            EntitlementRow(title: "Set Service Endpoint", detail: "Allows overriding the endpoint of a launch service that is not registerd.", flag: .launchServicesSetEndpoint),
+        EntitlementSection(title: NSLocalizedString("Launch Services", comment: ""), rows: [
+            EntitlementRow(title: NSLocalizedString("Start Service", comment: ""), detail: "Allows starting launch services. (unimplemented)", flag: .launchServicesStart),
+            EntitlementRow(title: NSLocalizedString("Stop Service", comment: ""), detail: "Allows stopping launch services. (unimplemented)", flag: .launchServicesStop),
+            EntitlementRow(title: NSLocalizedString("Toggle Service", comment: ""), detail: "Allows toggling launch services on or off. (unimplemented)", flag: .launchServicesToggle),
+            EntitlementRow(title: NSLocalizedString("Get Service Endpoint", comment: ""), detail: "Allows reading the endpoint of a launch service.", flag: .launchServicesGetEndpoint),
+            EntitlementRow(title: NSLocalizedString("Set Service Endpoint", comment: ""), detail: "Allows overriding the endpoint of a launch service that is not registerd.", flag: .launchServicesSetEndpoint),
         ]),
-        EntitlementSection(title: "Host & Credentials", rows: [
-            EntitlementRow(title: "Host Manager", detail: "Grants overriding host properties such as hostname.", flag: .hostManager),
-            EntitlementRow(title: "Credentials Manager", detail: "Allows managing users and groups. (unimplemented)", flag: .credentialsManager),
+        EntitlementSection(title: NSLocalizedString("Host & Credentials", comment: ""), rows: [
+            EntitlementRow(title: NSLocalizedString("Host Manager", comment: ""), detail: "Grants overriding host properties such as hostname.", flag: .hostManager),
+            EntitlementRow(title: NSLocalizedString("Credentials Manager", comment: ""), detail: "Allows managing users and groups. (unimplemented)", flag: .credentialsManager),
         ]),
-        EntitlementSection(title: "Security & Runtime", rows: [
-            EntitlementRow(title: "Platform Process", detail: "Marks the process as a platform process.", flag: .platform),
-            EntitlementRow(title: "Platform Root", detail: "Starts a process that is platformized as root user, meant as a security feature to prevent privelege escalations.", flag: .platformRoot),
-            EntitlementRow(title: "DYLD Hide LiveProcess", detail: "Hides the PEProcesses trampoline process loader.", flag: .dyldHideLiveProcess),
+        EntitlementSection(title: NSLocalizedString("Security & Runtime", comment: ""), rows: [
+            EntitlementRow(title: NSLocalizedString("Platform Process", comment: ""), detail: "Marks the process as a platform process.", flag: .platform),
+            EntitlementRow(title: NSLocalizedString("Platform Root", comment: ""), detail: "Starts a process that is platformized as root user, meant as a security feature to prevent privelege escalations.", flag: .platformRoot),
+            EntitlementRow(title: NSLocalizedString("DYLD Hide LiveProcess", comment: ""), detail: "Hides the PEProcesses trampoline process loader.", flag: .dyldHideLiveProcess),
         ]),
     ]
 
@@ -84,7 +84,7 @@ class MachOPatcherViewController: UIThemedTableViewController {
         title = "\((path as NSString).lastPathComponent)'s Entitlements"
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "EntitlementCell")
         let barButton = UIBarButtonItem()
-        barButton.title = "Apply"
+        barButton.title = NSLocalizedString("Apply", comment: "")
         barButton.target = self
         barButton.action = #selector(applyTapped)
         navigationItem.rightBarButtonItem = barButton

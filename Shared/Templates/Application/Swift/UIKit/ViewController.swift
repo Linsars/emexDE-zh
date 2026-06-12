@@ -11,7 +11,7 @@ class ViewController: UIViewController {
 		imageView.tintColor = .systemBlue
 		
 		let label = UILabel()
-		label.text = "Hello, world!"
+		label.text = NSLocalizedString("Hello, world!", comment: "")
 		label.textAlignment = .center
 		label.textColor = .label
 		

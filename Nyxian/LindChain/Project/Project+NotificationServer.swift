@@ -71,7 +71,7 @@ func getTopViewController(base: UIViewController? = UIApplication.shared.connect
                         preferredStyle: .alert
                     )
                     
-                    alert.addAction(UIAlertAction(title: "Close", style: .cancel))
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""), style: .cancel))
                     
                     rootVC.present(alert, animated: true)
                 }

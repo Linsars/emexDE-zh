@@ -109,7 +109,7 @@ class Builder: NSObject, MDKDriverDelegate, MDKPhaseRunnerDelegate {
         
         guard let swiftFiles = LDEFilesFinder(self.project.url.path, ["swift"], ["Resources","Config"]),
               let codeFiles = LDEFilesFinder(self.project.url.path, ["c","cpp","m","mm"], ["Resources","Config"]) else {
-            self.database.addMessage(message: "A fatal error has happened finding code files.", severity: .error)
+            self.database.addMessage(message: NSLocalizedString("A fatal error has happened finding code files.", comment: ""), severity: .error)
             self.database.saveDatabase(toPath: project.cacheURL.appendingPathComponent("debug.json").path)
             return nil
         }
@@ -122,7 +122,7 @@ class Builder: NSObject, MDKDriverDelegate, MDKPhaseRunnerDelegate {
         
         let phaseEngine: MDKPhaseEngine
         if swiftFiles.isEmpty && codeFiles.isEmpty {
-            self.database.addMessage(message: "Nothing to build. No code files were found, please create a code file.", severity: .error)
+            self.database.addMessage(message: NSLocalizedString("Nothing to build. No code files were found, please create a code file.", comment: ""), severity: .error)
             self.database.saveDatabase(toPath: project.cacheURL.appendingPathComponent("debug.json").path)
             return nil
         } else if !swiftFiles.isEmpty {
@@ -211,7 +211,7 @@ class Builder: NSObject, MDKDriverDelegate, MDKPhaseRunnerDelegate {
                 wasSuccessful success: Bool) {
         if let diagnostics = diagnostics {
             if job.type == .linker {
-                self.database.addDiagnosticMessages(title: "Linker", items: diagnostics, clearPrevious: true)
+                self.database.addDiagnosticMessages(title: NSLocalizedString("Linker", comment: ""), items: diagnostics, clearPrevious: true)
             } else if let mainSource = mainSource {
                 self.database.setFileDebug(ofPath: mainSource, synItems: diagnostics)
             }

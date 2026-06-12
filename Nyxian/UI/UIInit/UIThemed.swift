@@ -247,7 +247,7 @@ extension UIViewController {
     ) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel))
         
         if addHandler {
             alert.addAction(UIAlertAction(title: confirmTitle, style: confirmStyle) { _ in

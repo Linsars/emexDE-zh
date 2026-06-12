@@ -49,7 +49,7 @@ struct UIOnboardingHelper {
                       ? UIColor(red: 0.55, green: 0.78, blue: 0.98, alpha: 1.0)
                       : UIColor(red: 0.30, green: 0.58, blue: 0.88, alpha: 1.0)
                   },
-                  title: "Development",
+                  title: NSLocalizedString("Development", comment: ""),
                   description: "A full fledged Xcode alternative supporting Swift, C, C++, Objective-C and Objective-C++ that runs on any iOS 16.0+ iPhone or iPad."),
             
                 .init(icon: UIImage(systemName: "swift")!,
@@ -58,7 +58,7 @@ struct UIOnboardingHelper {
                           ? UIColor(red: 0.99, green: 0.70, blue: 0.55, alpha: 1.0)
                           : UIColor(red: 0.92, green: 0.50, blue: 0.30, alpha: 1.0)
                       },
-                      title: "Swift",
+                      title: NSLocalizedString("Swift", comment: ""),
                       description: "Write, compile, and run Swift code on-device with a full integrated Swift frontend."),
             
                 .init(icon: UIImage(systemName: "wrench.and.screwdriver.fill")!,
@@ -67,7 +67,7 @@ struct UIOnboardingHelper {
                           ? UIColor(red: 0.78, green: 0.71, blue: 0.95, alpha: 1.0)
                           : UIColor(red: 0.55, green: 0.45, blue: 0.85, alpha: 1.0)
                       },
-                      title: "MobileDevelopmentKit",
+                      title: NSLocalizedString("MobileDevelopmentKit", comment: ""),
                       description: "A complete LLVM, Swift, Clang, and LLD toolchain running natively on iOS, powering compilation and linking completely on-device without any overpriced cloud services or subscriptions."),
             
                 .init(icon: UIImage(systemName: "cpu.fill")!,
@@ -76,7 +76,7 @@ struct UIOnboardingHelper {
                           ? UIColor(red: 0.60, green: 0.88, blue: 0.80, alpha: 1.0)
                           : UIColor(red: 0.30, green: 0.68, blue: 0.58, alpha: 1.0)
                       },
-                      title: "Native Performance",
+                      title: NSLocalizedString("Native Performance", comment: ""),
                       description: "A custom kernel virtualization layer providing real process management, Mach IPC, and POSIX semantics directly on-device."),
         ])
     }
@@ -94,7 +94,7 @@ struct UIOnboardingHelper {
     }
     
     static func setUpButton() -> UIOnboardingButtonConfiguration {
-        return .init(title: "Continue", titleColor: currentTheme!.backgroundColor, backgroundColor: UIColor { trait in
+        return .init(title: NSLocalizedString("Continue", comment: ""), titleColor: currentTheme!.backgroundColor, backgroundColor: UIColor { trait in
             trait.userInterfaceStyle == .dark
             ? UIColor(red: 0.85, green: 0.74, blue: 0.93, alpha: 1.0)
             : UIColor(red: 0.62, green: 0.48, blue: 0.78, alpha: 1.0)
@@ -155,8 +155,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, UITabBarControllerDeleg
         let contentNavigationController: UINavigationController = UINavigationController(rootViewController: contentViewController)
         let settingsNavigationController: UINavigationController = UINavigationController(rootViewController: settingsViewController)
         
-        contentNavigationController.tabBarItem = UITabBarItem(title: "Projects", image: UIImage(systemName: "square.grid.2x2.fill"), tag: 0)
-        settingsNavigationController.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(systemName: "gear"), tag: 1)
+        contentNavigationController.tabBarItem = UITabBarItem(title: NSLocalizedString("Projects", comment: ""), image: UIImage(systemName: "square.grid.2x2.fill"), tag: 0)
+        settingsNavigationController.tabBarItem = UITabBarItem(title: NSLocalizedString("Settings", comment: ""), image: UIImage(systemName: "gear"), tag: 1)
         
         var viewControllers: [UIViewController] = [contentNavigationController, settingsNavigationController]
         
@@ -164,7 +164,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, UITabBarControllerDeleg
             if #available(iOS 26.0, *) {
                 let fakeViewController: UIViewController = UIViewController()
                 fakeViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .search, tag: 2)
-                fakeViewController.tabBarItem.title = "Switcher"
+                fakeViewController.tabBarItem.title = NSLocalizedString("Switcher", comment: "")
                 fakeViewController.tabBarItem.image = UIImage(systemName: "iphone.app.switcher")
                 viewControllers.append(fakeViewController)
             }

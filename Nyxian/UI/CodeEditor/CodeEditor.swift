@@ -131,7 +131,7 @@ class CodeEditorViewController: UIViewController, NXDocumentDelegate {
            !self.isReadOnly {
             let saveButton: UIBarButtonItem = UIBarButtonItem()
             saveButton.tintColor = .label
-            saveButton.title = "Save"
+            saveButton.title = NSLocalizedString("Save", comment: "")
             saveButton.target = self
             saveButton.action = #selector(saveText)
             self.navigationItem.setRightBarButton(saveButton, animated: true)
@@ -140,7 +140,7 @@ class CodeEditorViewController: UIViewController, NXDocumentDelegate {
         if UIDevice.current.userInterfaceIdiom != .pad {
             let closeButton: UIBarButtonItem = UIBarButtonItem()
             closeButton.tintColor = .label
-            closeButton.title = "Close"
+            closeButton.title = NSLocalizedString("Close", comment: "")
             closeButton.target = self
             closeButton.action = #selector(closeEditor)
             self.navigationItem.setLeftBarButton(closeButton, animated: true)
@@ -670,7 +670,7 @@ class CodeEditorViewController: UIViewController, NXDocumentDelegate {
     
     override var keyCommands: [UIKeyCommand]? {
         return [
-            UIKeyCommand(title: "Save File",
+            UIKeyCommand(title: NSLocalizedString("Save File", comment: ""),
                          action: #selector(saveText),
                          input: "S",
                          modifierFlags: .command)
@@ -773,11 +773,11 @@ class CodeEditorViewController: UIViewController, NXDocumentDelegate {
     
     private func showNoDefinitionFound() {
         let alert = UIAlertController(
-            title: "No Definition Found",
-            message: "Could not find a definition for the symbol at the cursor.",
+            title: NSLocalizedString("No Definition Found", comment: ""),
+            message: NSLocalizedString("Could not find a definition for the symbol at the cursor.", comment: ""),
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default))
         self.present(alert, animated: true)
     }
     
@@ -788,7 +788,7 @@ class CodeEditorViewController: UIViewController, NXDocumentDelegate {
             return
         }
         
-        let myAction = UIAction(title: "Jump To Definition", image: UIImage(systemName: "cursorarrow")) { _ in
+        let myAction = UIAction(title: NSLocalizedString("Jump To Definition", comment: ""), image: UIImage(systemName: "cursorarrow")) { _ in
             self.jumpToDefinition()
         }
 

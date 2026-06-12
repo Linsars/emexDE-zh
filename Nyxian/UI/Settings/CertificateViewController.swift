@@ -46,10 +46,10 @@ class CertificateImporter: UIThemedTableViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Import Certificate"
+        self.title = NSLocalizedString("Import Certificate", comment: "")
         
         let barbutton: UIBarButtonItem = UIBarButtonItem()
-        barbutton.title = "Submit"
+        barbutton.title = NSLocalizedString("Submit", comment: "")
         barbutton.target = self
         barbutton.action = #selector(importButton)
         navigationItem.rightBarButtonItem = barbutton

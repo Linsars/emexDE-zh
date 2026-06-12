@@ -76,11 +76,11 @@ class KernelLogViewController: UIViewController {
 
     private func setupNavigationItems() {
         navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(title: "Copy",
+            UIBarButtonItem(title: NSLocalizedString("Copy", comment: ""),
                             style: .plain,
                             target: self,
                             action: #selector(copyLog)),
-            UIBarButtonItem(title: "Refresh",
+            UIBarButtonItem(title: NSLocalizedString("Refresh", comment: ""),
                             style: .plain,
                             target: self,
                             action: #selector(refreshLog))
@@ -92,7 +92,7 @@ class KernelLogViewController: UIViewController {
             if let log = klog_dump() {
                 label.text = log as String
             } else {
-                label.text = "Kernel logging disabled."
+                label.text = NSLocalizedString("Kernel logging disabled.", comment: "")
             }
         }
         self.scrollView.layoutSubviews()
@@ -100,10 +100,10 @@ class KernelLogViewController: UIViewController {
 
     @objc private func copyLog() {
         UIPasteboard.general.string = label.text
-        let alert = UIAlertController(title: "Copied",
-                                      message: "The log has been copied to the clipboard.",
+        let alert = UIAlertController(title: NSLocalizedString("Copied", comment: ""),
+                                      message: NSLocalizedString("The log has been copied to the clipboard.", comment: ""),
                                       preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default))
         present(alert, animated: true)
     }
 }

@@ -29,7 +29,7 @@ class ToolChainController: UIThemedTableViewController {
         
         tableView.register(ToggleTableCell.self, forCellReuseIdentifier: ToggleTableCell.reuseIdentifier)
         
-        self.title = "Toolchain"
+        self.title = NSLocalizedString("Toolchain", comment: "")
         
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
         self.tableView.rowHeight = UITableView.automaticDimension
@@ -73,21 +73,21 @@ class ToolChainController: UIThemedTableViewController {
         switch indexPath.section {
         case 0:
             cell = tableView.dequeueReusableCell(withIdentifier: ToggleTableCell.reuseIdentifier, for: indexPath) as! ToggleTableCell
-            (cell as! ToggleTableCell).configure(title: "Incremental Build", key: "LDEIncrementalBuild", defaultValue: true)
+            (cell as! ToggleTableCell).configure(title: NSLocalizedString("Incremental Build", comment: ""), key: "LDEIncrementalBuild", defaultValue: true)
             break
         case 1:
             let optimCpuCount: Int = (Int)(CCGetMaximumPerformanceCores())
-            cell = StepperTableCell(title: "Use Threads", key: "cputhreads", defaultValue: optimCpuCount, minValue: 1, maxValue: optimCpuCount)
+            cell = StepperTableCell(title: NSLocalizedString("Use Threads", comment: ""), key: "cputhreads", defaultValue: optimCpuCount, minValue: 1, maxValue: optimCpuCount)
             break
         default:
             switch(indexPath.row) {
             case 0:
                 cell = UITableViewCell()
-                cell.textLabel?.text = "Clear Module Cache"
+                cell.textLabel?.text = NSLocalizedString("Clear Module Cache", comment: "")
                 break
             default:
                 cell = UITableViewCell()
-                cell.textLabel?.text = "Clear Project Cache"
+                cell.textLabel?.text = NSLocalizedString("Clear Project Cache", comment: "")
                 break
             }
             break

@@ -83,13 +83,13 @@ struct ProjectCreationSheetView: View {
     
     private var controls: some View {
         HStack(spacing: 12) {
-            Button("Cancel", action: onCancel)
+            Button(NSLocalizedString("Cancel", comment: "")", action: onCancel)
                 .buttonStyle(ProjectCreationSecondaryButtonStyle())
             
             Spacer(minLength: 12)
             
             if model.step == .options {
-                Button("Previous") {
+                Button(NSLocalizedString("Previous", comment: "")") {
                     withAnimation(.snappy) { model.step = .template }
                 }
                 .buttonStyle(ProjectCreationSecondaryButtonStyle())

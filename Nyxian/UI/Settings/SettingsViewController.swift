@@ -32,7 +32,7 @@ class SettingsViewController: UIThemedTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Settings"
+        self.title = NSLocalizedString("Settings", comment: "")
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -61,15 +61,15 @@ class SettingsViewController: UIThemedTableViewController {
                     return "gearshape.2.fill"
                 }
             }())
-            cell.textLabel?.text = "Toolchain"
+            cell.textLabel?.text = NSLocalizedString("Toolchain", comment: "")
             break
         case 1:
             cell.imageView?.image = UIImage(systemName: "app.badge.fill")
-            cell.textLabel?.text = "Applications"
+            cell.textLabel?.text = NSLocalizedString("Applications", comment: "")
             break
         case 2:
             cell.imageView?.image = UIImage(systemName: "paintbrush.fill")
-            cell.textLabel?.text = "Customization"
+            cell.textLabel?.text = NSLocalizedString("Customization", comment: "")
             break
         case 3:
             cell.imageView?.image = UIImage(systemName: {
@@ -79,21 +79,21 @@ class SettingsViewController: UIThemedTableViewController {
                     return "checkmark.seal.fill"
                 }
             }())
-            cell.textLabel?.text = "Certificate"
+            cell.textLabel?.text = NSLocalizedString("Certificate", comment: "")
             break
 #if DEBUG
         case 4:
             cell.imageView?.image = UIImage(systemName: "ant.fill")
-            cell.textLabel?.text = "Kernel Log"
+            cell.textLabel?.text = NSLocalizedString("Kernel Log", comment: "")
             break
         case 5:
             cell.imageView?.image = UIImage(systemName: "person.3.fill")
-            cell.textLabel?.text = "Credits"
+            cell.textLabel?.text = NSLocalizedString("Credits", comment: "")
             break
 #else
         case 4:
             cell.imageView?.image = UIImage(systemName: "person.3.fill")
-            cell.textLabel?.text = "Credits"
+            cell.textLabel?.text = NSLocalizedString("Credits", comment: "")
             break
 #endif // DEBUG
 #else
@@ -105,15 +105,15 @@ class SettingsViewController: UIThemedTableViewController {
                     return "gearshape.2.fill"
                 }
             }())
-            cell.textLabel?.text = "Toolchain"
+            cell.textLabel?.text = NSLocalizedString("Toolchain", comment: "")
             break
         case 1:
             cell.imageView?.image = UIImage(systemName: "paintbrush.fill")
-            cell.textLabel?.text = "Customization"
+            cell.textLabel?.text = NSLocalizedString("Customization", comment: "")
             break
         case 2:
             cell.imageView?.image = UIImage(systemName: "person.3.fill")
-            cell.textLabel?.text = "Credits"
+            cell.textLabel?.text = NSLocalizedString("Credits", comment: "")
             break
 #endif /* !JAILBREAK_ENV */
         default:

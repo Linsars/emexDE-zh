@@ -32,8 +32,8 @@ struct ProjectTemplateSelectionView: View {
     var body: some View {
         VStack(spacing: 8) {
             templateRow(
-                title: "App",
-                subtitle: "Application project",
+                title: NSLocalizedString("App", comment: ""),
+                subtitle: NSLocalizedString("Application project", comment: ""),
                 systemImage: {
                     if #available(iOS 18.0, *) {
                         return "appstore.app.fill"
@@ -52,15 +52,15 @@ struct ProjectTemplateSelectionView: View {
             )
             
             templateRow(
-                title: "Utility",
-                subtitle: "Command line tool project",
+                title: NSLocalizedString("Utility", comment: ""),
+                subtitle: NSLocalizedString("Command line tool project", comment: ""),
                 systemImage: "terminal.fill",
                 schemeKind: .utility
             )
             
             templateRow(
-                title: "Library",
-                subtitle: "Library project",
+                title: NSLocalizedString("Library", comment: ""),
+                subtitle: NSLocalizedString("Library project", comment: ""),
                 systemImage: "building.columns.fill",
                 schemeKind: .library,
                 isEnabled: false

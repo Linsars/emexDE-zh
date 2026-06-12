@@ -41,7 +41,7 @@ import UIKit
         
         self.tableView.register(ProjectTableCell.self, forCellReuseIdentifier: ProjectTableCell.reuseIdentifier)
         
-        self.title = "Projects"
+        self.title = NSLocalizedString("Projects", comment: "")
 
         let createItem = UIBarButtonItem(
             barButtonSystemItem: .add,
@@ -304,7 +304,7 @@ import UIKit
     
     override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
-            let export: UIAction = UIAction(title: "Export", image: UIImage(systemName: "square.and.arrow.up.fill")) { [weak self] _ in
+            let export: UIAction = UIAction(title: NSLocalizedString("Export", comment: ""), image: UIImage(systemName: "square.and.arrow.up.fill")) { [weak self] _ in
                 DispatchQueue.global().async {
                     guard let self = self else { return }
                     
@@ -319,16 +319,16 @@ import UIKit
                 }
             }
             
-            let item: UIAction = UIAction(title: "Remove", image: UIImage(systemName: "trash.fill"), attributes: .destructive) { _ in
+            let item: UIAction = UIAction(title: NSLocalizedString("Remove", comment: ""), image: UIImage(systemName: "trash.fill"), attributes: .destructive) { _ in
                 let keys = Array(self.projectsList.keys).sorted()
                 let key = keys[indexPath.section]
                 let sectionProjects = self.projectsList[key] ?? []
                 let project = sectionProjects[indexPath.row]
                 
                 self.presentConfirmationAlert(
-                    title: "Warning",
-                    message: "Are you sure you want to remove \"\(project.projectConfig.displayName!)\"?",
-                    confirmTitle: "Remove",
+                    title: NSLocalizedString("Warning", comment: ""),
+                    message: String(format: NSLocalizedString("Are you sure you want to remove %@?", comment: ""), project.projectConfig.displayName!),
+                    confirmTitle: NSLocalizedString("Remove", comment: ""),
                     confirmStyle: .destructive)
                 { [weak self] in
                     guard let self = self else { return }
@@ -405,18 +405,18 @@ final class ProjectTemplateOptionsModel: ObservableObject {
     @Published var step: ProjectCreationStep = .template
     @Published private(set) var schemeKind: NXProjectSchemeKind
     private let appLanguages: [ProjectTemplatePickerOption] = [
-        ProjectTemplatePickerOption(id: "Swift", title: "Swift"),
-        ProjectTemplatePickerOption(id: "ObjC", title: "Objective-C")
+        ProjectTemplatePickerOption(id: "Swift", title: NSLocalizedString("Swift", comment: "")),
+        ProjectTemplatePickerOption(id: "ObjC", title: NSLocalizedString("Objective-C", comment: ""))
     ]
     private let utilityLanguages: [ProjectTemplatePickerOption] = [
-        ProjectTemplatePickerOption(id: "Swift", title: "Swift"),
-        ProjectTemplatePickerOption(id: "ObjC", title: "Objective-C"),
-        ProjectTemplatePickerOption(id: "C++", title: "C++"),
+        ProjectTemplatePickerOption(id: "Swift", title: NSLocalizedString("Swift", comment: "")),
+        ProjectTemplatePickerOption(id: "ObjC", title: NSLocalizedString("Objective-C", comment: "")),
+        ProjectTemplatePickerOption(id: "C++", title: NSLocalizedString("C++", comment: "")),
         ProjectTemplatePickerOption(id: "C", title: "C")
     ]
     private let interfaces: [ProjectTemplatePickerOption] = [
-        ProjectTemplatePickerOption(id: "SwiftUI", title: "SwiftUI"),
-        ProjectTemplatePickerOption(id: "UIKit", title: "UIKit")
+        ProjectTemplatePickerOption(id: "SwiftUI", title: NSLocalizedString("SwiftUI", comment: "")),
+        ProjectTemplatePickerOption(id: "UIKit", title: NSLocalizedString("UIKit", comment: ""))
     ]
 
     @Published var productName = ""
@@ -579,7 +579,7 @@ struct ProjectTemplateOptionsView: View {
             VStack(spacing: 8) {
                 if model.showsAppOptions {
                     ProjectTemplatePickerRow(
-                        title: "Interface:",
+                        title: NSLocalizedString("Interface:", comment: ""),
                         options: model.interfaceOptions,
                         disabledIDs: model.interfaceDisabledIDs,
                         selectionID: Binding(
@@ -590,7 +590,7 @@ struct ProjectTemplateOptionsView: View {
                 }
                 
                 ProjectTemplatePickerRow(
-                    title: "Language:",
+                    title: NSLocalizedString("Language:", comment: ""),
                     options: model.languageOptions,
                     selectionID: Binding(
                         get: { model.languageSelection },

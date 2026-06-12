@@ -88,12 +88,12 @@ extension PEEntitlement {
         
         let sections: [(title: String, prefix: String, items: [EntitlementItem])] = [
             (
-                title: "Task & Process Access",
+                title: NSLocalizedString("Task & Process Access", comment: ""),
                 prefix: "Can",
                 items: taskAndProcessItems
             ),
             (
-                title: "Process Control",
+                title: NSLocalizedString("Process Control", comment: ""),
                 prefix: "Can",
                 items: [
                     (.processKill, "kill processes", .customGold),
@@ -104,7 +104,7 @@ extension PEEntitlement {
                 ]
             ),
             (
-                title: "Launch Services",
+                title: NSLocalizedString("Launch Services", comment: ""),
                 prefix: "Can",
                 items: [
                     (.launchServicesStart, "start services", .customGold),
@@ -115,7 +115,7 @@ extension PEEntitlement {
                 ]
             ),
             (
-                title: "Host & Credentials",
+                title: NSLocalizedString("Host & Credentials", comment: ""),
                 prefix: "Can",
                 items: [
                     (.hostManager, "override host properties such as hostname", .systemOrange),
@@ -123,7 +123,7 @@ extension PEEntitlement {
                 ]
             ),
             (
-                title: "Security & Runtime",
+                title: NSLocalizedString("Security & Runtime", comment: ""),
                 prefix: "Runs",
                 items: runtimeItems
             ),
@@ -194,7 +194,7 @@ class ApplicationManagementViewController: UIThemedTableViewController, UITextFi
         super.viewDidLoad()
         self.tableView.register(ProjectTableCell.self, forCellReuseIdentifier: ProjectTableCell.reuseIdentifier)
         LDEApplicationWorkspace.shared().ping()
-        self.title = "Applications"
+        self.title = NSLocalizedString("Applications", comment: "")
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: nil, image: UIImage(systemName: "square.and.arrow.down.fill"), target: self, action: #selector(plusButtonPressed))
     }
     
@@ -218,14 +218,14 @@ class ApplicationManagementViewController: UIThemedTableViewController, UITextFi
         
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak application] _ in
             // MARK: Open Menu
-            let openMenu: UIMenuElement = UIAction(title: "Open", image: UIImage(systemName: "arrow.up.right.square.fill")) { _ in
+            let openMenu: UIMenuElement = UIAction(title: NSLocalizedString("Open", comment: ""), image: UIImage(systemName: "arrow.up.right.square.fill")) { _ in
                 guard let application = application else { return }
                 PEProcessManager.shared().spawnProcess(withBundleIdentifier: application.bundleIdentifier, withItems: [:], withKernelSurfaceProcess: nil, doRestartIfRunning: false)
             }
             
             var menu: [UIMenuElement] = [openMenu]
             
-            let entitlementsPatchAction = UIAction(title: "Patch Entitlements", image: UIImage(systemName: "bandage.fill")) { _ in
+            let entitlementsPatchAction = UIAction(title: NSLocalizedString("Patch Entitlements", comment: ""), image: UIImage(systemName: "bandage.fill")) { _ in
                 guard let application = application else { return }
                 let machOViewController: MachOPatcherViewController = MachOPatcherViewController(machOPath: application.executablePath) {
                     if PEProcessManager.shared().process(forBundleIdentifier: application.bundleIdentifier) != nil {
@@ -237,7 +237,7 @@ class ApplicationManagementViewController: UIThemedTableViewController, UITextFi
                 self.present(navMachOViewController, animated: true)
             }
             
-            let clearContainerAction = UIAction(title: "Clear Data Container", image: UIImage(systemName: {
+            let clearContainerAction = UIAction(title: NSLocalizedString("Clear Data Container", comment: ""), image: UIImage(systemName: {
                 if #available(iOS 17.0, *) {
                     return "arrow.up.trash.fill"
                 } else {
@@ -249,7 +249,7 @@ class ApplicationManagementViewController: UIThemedTableViewController, UITextFi
                 LDEApplicationWorkspace.shared().clearContainer(forBundleID: application.bundleIdentifier)
             }
             
-            let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash.fill"), attributes: .destructive) { [weak self] _ in
+            let deleteAction = UIAction(title: NSLocalizedString("Delete", comment: ""), image: UIImage(systemName: "trash.fill"), attributes: .destructive) { [weak self] _ in
                 guard let self = self,
                       let application = application else { return }
                 PEProcessManager.shared().closeIfRunning(usingBundleIdentifier: application.bundleIdentifier)
@@ -281,7 +281,7 @@ class ApplicationManagementViewController: UIThemedTableViewController, UITextFi
     }
     
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        let alert = UIAlertController(title: nil, message: "Validating", preferredStyle: .alert)
+        let alert = UIAlertController(title: nil, message: NSLocalizedString("Validating", comment: ""), preferredStyle: .alert)
         
         let activityIndicator = UIActivityIndicatorView(style: .medium)
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
@@ -336,7 +336,7 @@ class ApplicationManagementViewController: UIThemedTableViewController, UITextFi
                 // Gated :3
                 let proceedWithInstall = {
                     DispatchQueue.main.async {
-                        let alert = UIAlertController(title: nil, message: "Installing", preferredStyle: .alert)
+                        let alert = UIAlertController(title: nil, message: NSLocalizedString("Installing", comment: ""), preferredStyle: .alert)
                         
                         let activityIndicator = UIActivityIndicatorView(style: .medium)
                         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
@@ -412,13 +412,13 @@ class ApplicationManagementViewController: UIThemedTableViewController, UITextFi
                         
                         alert.setValue(fullMessage, forKey: "attributedMessage")
                         
-                        alert.addAction(UIAlertAction(title: "Install", style: .default) { _ in
+                        alert.addAction(UIAlertAction(title: NSLocalizedString("Install", comment: ""), style: .default) { _ in
                             DispatchQueue.global().async {
                                 _ = proceedWithInstall()
                             }
                         })
                         
-                        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel))
                         
                         self.present(alert, animated: true)
                     }

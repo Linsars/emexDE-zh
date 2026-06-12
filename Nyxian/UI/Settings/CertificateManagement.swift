@@ -27,7 +27,7 @@ class CertificateController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Certificate"
+        self.title = NSLocalizedString("Certificate", comment: "")
         self.tableView.rowHeight = UITableView.automaticDimension
     }
     
@@ -38,7 +38,7 @@ class CertificateController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 1 {
             let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
-            cell.textLabel?.text = "Import Certificate"
+            cell.textLabel?.text = NSLocalizedString("Import Certificate", comment: "")
             cell.textLabel?.textColor = .label
             cell.textLabel?.textAlignment = .left
             cell.selectionStyle = .default

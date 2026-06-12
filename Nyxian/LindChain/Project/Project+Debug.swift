@@ -83,7 +83,7 @@ class DebugDatabase: Codable {
         } catch {
             print("Failed to decode certblob:", error)
             let debugDatabase: DebugDatabase = DebugDatabase()
-            debugDatabase.debugObjects["Internal"] = DebugObject(title: "Internal", flavour: .Message)
+            debugDatabase.debugObjects["Internal"] = DebugObject(title: NSLocalizedString("Internal", comment: ""), flavour: .Message)
             return debugDatabase
         }
     }
@@ -170,11 +170,11 @@ class DebugDatabase: Codable {
     
     func clearDatabase() {
         self.debugObjects = [:]
-        self.debugObjects["Internal"] = DebugObject(title: "Internal", flavour: .Message)
+        self.debugObjects["Internal"] = DebugObject(title: NSLocalizedString("Internal", comment: ""), flavour: .Message)
     }
     
     func reuseDatabase() {
-        self.debugObjects["Internal"] = DebugObject(title: "Internal", flavour: .Message)
+        self.debugObjects["Internal"] = DebugObject(title: NSLocalizedString("Internal", comment: ""), flavour: .Message)
     }
 }
 
@@ -201,7 +201,7 @@ class UIDebugViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Issue Navigator"
+        self.title = NSLocalizedString("Issue Navigator", comment: "")
         
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 60
@@ -254,7 +254,7 @@ class UIDebugViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let items = sortedDebugObjects[indexPath.section].debugItems
-        let item = (items.count > 0) ? items[indexPath.row] : DebugItem(severity: .note, message: "Contains no messages")
+        let item = (items.count > 0) ? items[indexPath.row] : DebugItem(severity: .note, message: NSLocalizedString("Contains no messages", comment: ""))
         
         let cell = UITableViewCell()
         cell.textLabel?.text = item.message

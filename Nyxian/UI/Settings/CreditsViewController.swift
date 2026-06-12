@@ -57,7 +57,7 @@ class CreditsViewController: UIThemedTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Credits"
+        self.title = NSLocalizedString("Credits", comment: "")
         
         self.tableView.register(CreditCell.self, forCellReuseIdentifier: CreditCell.identifier)
     }
